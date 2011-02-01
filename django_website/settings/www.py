@@ -60,7 +60,6 @@ INSTALLED_APPS = (
     'django_website.aggregator',
     'django_website.docs',
     'registration',
-    'south',
 )
 
 CACHE_MIDDLEWARE_SECONDS = 60 * 5 # 5 minutes
