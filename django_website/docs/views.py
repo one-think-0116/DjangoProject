@@ -3,11 +3,10 @@ from __future__ import absolute_import
 import datetime
 import django.views.static
 from django.core import urlresolvers
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.utils import simplejson
-import haystack.views
-from .forms import DocSearchForm
 from .models import DocumentRelease
 from .utils import get_doc_root_or_404, get_doc_path_or_404
 
@@ -33,6 +32,7 @@ def document(request, lang, version, url):
         'docurl': url,
         'update_date': datetime.datetime.fromtimestamp(docroot.child('last_build').mtime()),
         'home': urlresolvers.reverse('document-index', kwargs={'lang':lang, 'version':version}),
+        'search': urlresolvers.reverse('document-search', kwargs={'lang':lang, 'version':version}),
         'redirect_from': request.GET.get('from', None),
     }))
 
@@ -59,20 +59,24 @@ def objects_inventory(request, lang, version):
     response['Content-Type'] = "text/plain"
     return response
 
-class DocSearchView(haystack.views.SearchView):
-    def __init__(self, **kwargs):
-        kwargs.update({
-            'template': 'docs/search.html',
-            'form_class': DocSearchForm,
-        })
-        super(DocSearchView, self).__init__(**kwargs)
+def redirect_index(request, *args, **kwargs):
+    return HttpResponseRedirect(request.path.rstrip('index/'))
+
+def search(request, lang, version):
+    docroot = get_doc_root_or_404(lang, version)
     
-    def extra_context(self):
-        # Constuct a context that matches the rest of the doc page views.
-        default_release = DocumentRelease.objects.default()
-        return {
-            'lang': default_release.lang,
-            'version': default_release.version,
-            'release': default_release,
-        }
+    # Remove the 'cof' GET variable from the query string so that the page
+    # linked to by the Javascript fallback doesn't think its inside an iframe.
+    mutable_get = request.GET.copy()
+    if 'cof' in mutable_get:
+        del mutable_get['cof']
     
+    return render_to_response('docs/search.html', RequestContext(request, {
+        'query': request.GET.get('q'),
+        'query_string': mutable_get.urlencode(),
+        'lang': lang,
+        'version': version,
+        'env': simplejson.load(open(docroot.child('globalcontext.json'), 'rb')),
+        'home': urlresolvers.reverse('document-index', kwargs={'lang':lang, 'version':version}),
+        'search': urlresolvers.reverse('document-search', kwargs={'lang':lang, 'version':version}),
+    }))

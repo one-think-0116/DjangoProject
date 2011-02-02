@@ -2,13 +2,12 @@ from __future__ import absolute_import
 
 from django.conf import settings
 from django.conf.urls.defaults import *
-from django.contrib import admin; admin.autodiscover()
+from django.contrib import admin
 from django.contrib.comments.feeds import LatestCommentFeed
 from django.contrib.comments.models import Comment
 from django.contrib.sitemaps import views as sitemap_views
 from django.views.decorators.cache import cache_page
-from django.views.generic.simple import redirect_to
-from ..aggregator.feeds import CommunityAggregatorFeed, CommunityAggregatorFirehoseFeed
+from ..aggregator.feeds import CommunityAggregatorFeed
 from ..aggregator.models import FeedItem
 from ..blog.feeds import WeblogEntryFeed
 from ..sitemaps import FlatPageSitemap, WeblogSitemap
@@ -25,18 +24,23 @@ sitemaps = {
 
 urlpatterns = patterns('',
     url(r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'homepage.html'}, name="homepage"),
-    url(r'^accounts/', include('django_website.accounts.urls')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^comments/$', 'django.views.generic.list_detail.object_list', comments_info_dict),
-    url(r'^comments/', include('django.contrib.comments.urls')),
-    url(r'^community/', include('django_website.aggregator.urls')),
+    (r'^accounts/', include('django_website.accounts.urls')),
+    (r'^admin/(.*)', admin.site.root),
+    (r'^comments/$', 'django.views.generic.list_detail.object_list', comments_info_dict),
+    (r'^comments/', include('django.contrib.comments.urls')),
+    url(r'^community/add/(?P<feed_type_slug>[-\w]+)/',
+         'django_website.aggregator.views.add_feed',
+          name='community-add-feed'),
+    url(r'^community/(?P<feed_type_slug>[-\w]+)/',
+         'django_website.aggregator.views.feed_list',
+          name="community-feed-list"),
+    url(r'^community/', 'django_website.aggregator.views.index', name='community-index'),
     url(r'^contact/', include('django_website.contact.urls')),
     url(r'^r/', include('django.conf.urls.shortcut')),
 
     url(r'^rss/weblog/$', WeblogEntryFeed(), name='weblog-feed'),
     url(r'^rss/comments/$', LatestCommentFeed(), name='comments-feed'),
-    url(r'^rss/community/$', redirect_to, {'url': '/rss/community/blogs/'}),
-    url(r'^rss/community/firehose/$', CommunityAggregatorFirehoseFeed(), name='aggregator-firehose-feed'),
+    url(r'^rss/community/$', CommunityAggregatorFeed(), name='aggregator-firehose-feed'),
     url(r'^rss/community/(?P<slug>[\w-]+)/$', CommunityAggregatorFeed(), name='aggregator-feed'),
 
     url(r'^sitemap\.xml$', cache_page(sitemap_views.sitemap, 60 * 60 * 6), {'sitemaps': sitemaps}),
