@@ -41,7 +41,7 @@
   <ul>
     <li>
       Try the <a href="{% url document-detail lang=lang, version=version, url="faq" %}">FAQ</a> 
-      — it's got answers to many common questions.
+      -— it's got answers to many common questions.
     </li>
     <li>
       Search for information in the <a
@@ -51,8 +51,8 @@
     </li>
     <li>
       Ask a question in the <a href="irc://irc.freenode.net/">#django IRC
-      channel</a>, or search the <a href="http://botland.oebfare.com/logger/django/">IRC
-      logs</a> to see if it has been asked before.
+      channel</a>, or search the <a href="http://oebfare.com/logger/django/">IRC
+      logs</a> to see if its been asked before.
     </li>
     <li>
       If you notice errors with this documentation, please <a
@@ -66,18 +66,19 @@
 {% endblock %}
 
 {% block content-related %}
-  {% block search %}
-    <h2>Search</h2>
-    {% load docs %}
-    {% search_form %}
-  {% endblock %}
-
   {% block toc-wrapper %}
     <h2>Contents</h2>
     {% block toc %}
       {{ doc.toc|safe }}
     {% endblock %}
   {% endblock %}
+  
+  {% block search %}
+    <h2>Search</h2>
+    {% load docs %}
+    {% search_form %}
+  {% endblock %}
+  
   {% block browse-wrapper %}
     <h2>Browse</h2>
     <ul>
@@ -114,6 +115,6 @@
   
   {% block last-update-wrapper %}
     <h3>Last update:</h3>
-    <div>{{ update_date|date:"F j, Y, P" }} (<a href="http://www.timeanddate.com/worldclock/city.html?n=64">{{ update_date|date:"T" }}</a>)</div>
+    <div>{{ update_date|date:"F j, Y, P" }} (<a href="http://www.timeanddate.com/worldclock/city.html?n=64">CDT</a>)</div>
   {% endblock %}
 {% endblock %}
