@@ -4,10 +4,11 @@ from django.contrib import admin
 from .models import Feed, FeedItem, FeedType
 
 admin.site.register(Feed, 
-    list_display  = ["title", "public_url", "is_defunct"],
-    list_filter   = ["is_defunct"],
+    list_display  = ["title", "feed_type", "public_url"],
+    list_filter   = ["feed_type", "is_defunct"],
     ordering      = ["title"],
     search_fields = ["title", "public_url"],
+    raw_id_fields = ['owner'],
     list_per_page = 500,
 )
 
