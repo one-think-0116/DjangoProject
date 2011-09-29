@@ -10,7 +10,7 @@ env.deploy_base = unipath.Path('/home/www/djangoproject.com')
 env.virtualenv = env.deploy_base
 env.code_dir = env.deploy_base.child('src')
 env.git_url = 'git://github.com/django/djangoproject.com.git'
-env.default_deploy_ref = 'origin/deploy'
+env.default_deploy_ref = 'origin/master'
 
 def full_deploy():
     """
@@ -18,6 +18,7 @@ def full_deploy():
     """
     deploy_code()
     update_dependencies()
+    migrate()
     apache("restart")
     memcached("restart")
 
@@ -42,7 +43,7 @@ def memcached(cmd):
 
 def deploy_code(ref=None):
     """
-    Update code on the servers from Git.    
+    Update code on the servers from Git.
     """
     ref = ref or env.default_deploy_ref
     puts("Deploying %s" % ref)
@@ -60,6 +61,13 @@ def update_dependencies():
     sudo('%s -q install -U pip' % pip)
     sudo('%s -q install -r %s' % (pip, reqs))
 
+def migrate():
+    """
+    Run migrate/syncdb.
+    """
+    managepy('syncdb')
+    managepy('migrate')
+
 def update_docs():
     """
     Force an update of the docs on the server.
@@ -71,7 +79,14 @@ def copy_db():
     Copy the production DB locally for testing.
     """
     local('ssh %s pg_dump -U djangoproject -c djangoproject | psql djangoproject' % env.hosts[0])
-    
+
+def copy_docs():
+    """
+    Copy build docs locally for testing.
+    """
+    local('rsync -av --delete --exclude=.svn %s:%s/ /tmp/djangodocs/' %
+            (env.hosts[0], env.deploy_base.child('docbuilds')))
+
 def managepy(cmd, site='www'):
     """
     Helper: run a management command remotely.
