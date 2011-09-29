@@ -10,7 +10,7 @@ env.deploy_base = unipath.Path('/home/www/djangoproject.com')
 env.virtualenv = env.deploy_base
 env.code_dir = env.deploy_base.child('src')
 env.git_url = 'git://github.com/django/djangoproject.com.git'
-env.default_deploy_ref = 'origin/master'
+env.default_deploy_ref = 'origin/deploy'
 
 def full_deploy():
     """
@@ -18,7 +18,6 @@ def full_deploy():
     """
     deploy_code()
     update_dependencies()
-    migrate()
     apache("restart")
     memcached("restart")
 
@@ -60,13 +59,6 @@ def update_dependencies():
     reqs = env.code_dir.child('deploy-requirements.txt')
     sudo('%s -q install -U pip' % pip)
     sudo('%s -q install -r %s' % (pip, reqs))
-
-def migrate():
-    """
-    Run migrate/syncdb.
-    """
-    managepy('syncdb')
-    managepy('migrate')
 
 def update_docs():
     """
