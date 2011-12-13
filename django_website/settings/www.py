@@ -25,8 +25,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'djangoproject',
         'USER': 'djangoproject'
+    },
+    'trac': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'code.djangoproject',
+        'USER': 'code.djangoproject'
     }
 }
+DATABASE_ROUTERS = ['django_website.trac.db_router.TracRouter']
 
 USE_I18N = False
 USE_L10N = False
@@ -63,10 +69,14 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django_push.subscriber',
     'django_website.blog',
+    'django_website.accounts',
     'django_website.aggregator',
+    'django_website.cla',
     'django_website.docs',
+    'django_website.trac',
     'registration',
     'south',
+    'djangosecure',
 ]
 
 CACHE_MIDDLEWARE_SECONDS = 60 * 5 # 5 minutes
@@ -75,7 +85,9 @@ CACHE_MIDDLEWARE_GZIP = True
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 MIDDLEWARE_CLASSES = [
+    'djangosecure.middleware.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
@@ -160,6 +172,15 @@ DJANGO_SVN_ROOT = "http://code.djangoproject.com/svn/django/"
 PUSH_HUB = 'https://superfeedr.com/hubbub'
 PUSH_CREDENTIALS = 'django_website.aggregator.utils.push_credentials'
 PUSH_SSL_CALLBACK = PRODUCTION
+
+# Lock down some security stuff
+if PRODUCTION:
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SECURE_SSL_REDIRECT = False
+    SECURE_FRAME_DENY = True
+    SECURE_HSTS_SECONDS = 600
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "SSL")
 
 # If django-debug-toolbar is installed enable it.
 if not PRODUCTION:
