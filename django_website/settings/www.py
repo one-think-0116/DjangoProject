@@ -14,12 +14,9 @@ PRODUCTION = ('DJANGOPROJECT_DEBUG' not in os.environ) and ("djangoproject" in p
 # It's a secret to everybody
 SECRETS = json.load(open(BASE.ancestor(2).child('secrets.json')))
 SECRET_KEY = str(SECRETS['secret_key'])
-# SUPERFEEDR_CREDS is a 2 element list in the form of [email,secretkey]
-SUPERFEEDR_CREDS = SECRETS.get('superfeedr_creds')
 
 ADMINS = (('Adrian Holovaty','holovaty@gmail.com'),('Jacob Kaplan-Moss', 'jacob@jacobian.org'))
 MANAGERS = (('Jacob Kaplan-Moss','jacob@jacobian.org'),)
-FEED_APPROVERS_GROUP_NAME = "feed-approver"
 TIME_ZONE = 'America/Chicago'
 SERVER_EMAIL = 'root@djangoproject.com'
 
@@ -67,7 +64,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.flatpages',
     'django.contrib.humanize',
-    'django.contrib.messages',
     'django.contrib.redirects',
     'django.contrib.sessions',
     'django.contrib.sitemaps',
@@ -83,8 +79,6 @@ INSTALLED_APPS = [
     'djangosecure',
 ]
 
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-
 CACHE_MIDDLEWARE_SECONDS = 60 * 5 # 5 minutes
 CACHE_MIDDLEWARE_KEY_PREFIX = 'djangoproject'
 CACHE_MIDDLEWARE_GZIP = True
@@ -93,7 +87,6 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 MIDDLEWARE_CLASSES = [
     'djangosecure.middleware.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -114,8 +107,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "django_website.context_processors.recent_release",
-    "django.contrib.messages.context_processors.messages",
-    ]
+]
 
 
 DEFAULT_FROM_EMAIL = "noreply@djangoproject.com"
@@ -202,3 +194,8 @@ if not PRODUCTION:
         MIDDLEWARE_CLASSES.insert(common_index+1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
         INTERNAL_IPS = ['127.0.0.1']
         INSTALLED_APPS.append('debug_toolbar')
+
+# Log errors to Sentry, if available.
+if 'sentry_dsn' in SECRETS:
+    INSTALLED_APPS.append('raven.contrib.django')
+    SENTRY_DSN = SECRETS['sentry_dsn']

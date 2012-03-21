@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django_push.subscriber import signals as push_signals
 from django_push.subscriber.models import Subscription
-from django.conf import settings
 
 log = logging.getLogger(__name__)
 
@@ -20,23 +19,11 @@ class FeedType(models.Model):
     def items(self):
         return FeedItem.objects.filter(feed__feed_type=self)
 
-APPROVED_FEED='A'
-DENIED_FEED='D'
-PENDING_FEED='P'
-
-STATUS_CHOICES = (
-    (PENDING_FEED, 'Pending'),
-    (DENIED_FEED, 'Denied'),
-    (APPROVED_FEED, 'Approved')
-)
-
-
 class Feed(models.Model):
     title = models.CharField(max_length=500)
     feed_url = models.URLField(unique=True, max_length=500)
     public_url = models.URLField(max_length=500)
     is_defunct = models.BooleanField()
-    approval_status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=PENDING_FEED)
     feed_type = models.ForeignKey(FeedType)
     owner = models.ForeignKey(User, blank=True, null=True, related_name='owned_feeds')
 
@@ -45,13 +32,11 @@ class Feed(models.Model):
 
     def save(self, **kwargs):
         super(Feed, self).save(**kwargs)
-        if settings.SUPERFEEDR_CREDS != None and self.approval_status == APPROVED_FEED:
-            Subscription.objects.subscribe(self.feed_url, settings.PUSH_HUB)
+        Subscription.objects.subscribe(self.feed_url, settings.PUSH_HUB)
 
     def delete(self, **kwargs):
         super(Feed, self).delete(**kwargs)
-        if settings.SUPERFEEDR_CREDS != None:
-            Subscription.objects.unsubscribe(self.feed_url, settings.PUSH_HUB)
+        Subscription.objects.unsubscribe(self.feed_url, settings.PUSH_HUB)
 
 class FeedItemManager(models.Manager):
     def create_or_update_by_guid(self, guid, **kwargs):
@@ -122,7 +107,7 @@ def feed_updated(sender, notification, **kwargs):
             guid = entry.get("id", entry.link)
         except AttributeError:
             log.error("Feed ID %s has an entry ('%s') without a link or guid. Skipping.", feed.id, title)
-        link = entry.link or guid
+        link = getattr(entry, "link", guid)
 
         if hasattr(entry, "summary"):
             content = entry.summary
