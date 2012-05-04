@@ -1,6 +1,6 @@
 {% extends "base_weblog.html" %}
 
-{% block title %}{{ object.headline|escape }} | Weblog{% endblock %}
+{% block title %}Weblog | {{ object.headline|escape }}{% endblock %}
 
 {% block content %}
 <h1>{{ object.headline|safe }}</h1>
