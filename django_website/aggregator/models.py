@@ -133,7 +133,9 @@ def feed_updated(sender, notification, **kwargs):
         else:
             content = u""
 
-        if entry.has_key('updated_parsed'):
+        if 'published_parsed' in entry and entry.published_parsed is not None:
+            date_modified = datetime.datetime(*entry.published_parsed[:6])
+        elif 'updated_parsed' in entry and entry.updated_parsed is not None:
             date_modified = datetime.datetime(*entry.updated_parsed[:6])
         else:
             date_modified = datetime.datetime.now()
