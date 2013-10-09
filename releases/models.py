@@ -21,9 +21,6 @@ class ReleaseManager(models.Manager):
     def current(self):
         return self.final().order_by('-minor', '-micro')[0]
 
-    def lts(self):
-        return self.final().order_by('-minor', '-micro').filter(is_lts=True)[0]
-
     def current_version(self):
         current_version = cache.get(Release.DEFAULT_CACHE_KEY, None)
         if current_version is None:
@@ -58,8 +55,6 @@ class Release(models.Model):
     micro = models.PositiveSmallIntegerField(editable=False)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, editable=False)
     iteration = models.PositiveSmallIntegerField(editable=False)
-
-    is_lts = models.BooleanField("Long term support release", default=False)
 
     objects = ReleaseManager()
 

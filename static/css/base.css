@@ -42,9 +42,6 @@ a:link, a:visited {
     color:#ffc757;
     text-decoration:none;
 }
-#content-main .browse-horizontal a .literal {
-    color:white;
-}
 a:hover {
     color:#ffe761;
 }
@@ -328,12 +325,6 @@ ol {
 ul li {
     list-style-type:square;
     margin-bottom:.4em;
-}
-ul ul li {
-    list-style-type:disc;
-}
-ul ul ul li {
-    list-style-type:circle;
 }
 ul ul {
     padding-left:1.2em;

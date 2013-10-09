@@ -13,19 +13,17 @@
 
 <h2>Option {% cycle '1' '2' '3' as options %}. Get the latest official version</h2>
 
-<p>The latest official version is {{ current_version }}.</p>
-
-<p>You can install it with <a href="http://www.pip-installer.org/en/latest/">pip</a>:</p>
-
-<pre class="literal-block"><code>pip install Django=={{ current_version }}</code></pre>
-
-<p>You can also get it by direct download:</p>
+<p>The latest official version is {{ current_version }}. You can get it by direct download:
 
 <p>First, download <a href="{% url 'download-redirect' current_version 'tarball' %}">Django-{{ current_version }}.tar.gz</a> (<a href="{% url 'download-redirect' current_version 'checksum' %}">checksums</a>). Then:</p>
 
 <pre class="literal-block"><code>tar xzvf Django-{{ current_version }}.tar.gz
 cd Django-{{ current_version }}
 sudo python setup.py install</code></pre>
+
+<p>You can also use <a href="http://www.pip-installer.org/en/latest/">pip</a>:
+
+<pre class="literal-block"><code>pip install Django=={{ current_version }}</code></pre>
 
 {% if preview_version %}
 <h2>Option {% cycle options %}. Get the {{ preview_kind }} for {{ preview_version|slice:":3" }}</h2>
@@ -37,6 +35,10 @@ sudo python setup.py install</code></pre>
 <pre class="literal-block"><code>tar xzvf Django-{{ preview_version }}.tar.gz
 cd Django-{{ preview_version }}
 sudo python setup.py install</code></pre>
+
+<p>You can also use <a href="http://www.pip-installer.org/en/latest/">pip</a>:
+
+<pre class="literal-block"><code>pip install Django=={{ preview_version }}</code></pre>
 {% endif %}
 
 <h2>Option {% cycle options %}. Get the latest development version</h2>
@@ -67,9 +69,6 @@ sudo python setup.py install</code></pre>
 <h2>Previous releases</h2>
 <ul>
   <li>Django {{ previous_version }}: <a href="{% url 'download-redirect' previous_version 'tarball' %}">Django-{{ previous_version }}.tar.gz</a><br>Checksum: <a href="{% url 'download-redirect' previous_version 'checksum' %}">Django-{{ previous_version }}.checksum.txt</a></li>
-  {% if lts_version %}
-    <li>Django {{ lts_version }} (LTS): <a href="{% url 'download-redirect' lts_version 'tarball' %}">Django-{{ lts_version }}.tar.gz</a><br>Checksum: <a href="{% url 'download-redirect' lts_version 'checksum' %}">Django-{{ lts_version }}.checksum.txt</a></li>
-  {% endif %}
 </ul>
 
 <h2>Unsupported previous releases (no longer receive security updates or bugfixes)</h2>
