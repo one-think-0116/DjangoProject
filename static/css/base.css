@@ -42,6 +42,9 @@ a:link, a:visited {
     color:#ffc757;
     text-decoration:none;
 }
+#content-main .browse-horizontal a .literal {
+    color:white;
+}
 a:hover {
     color:#ffe761;
 }
@@ -325,6 +328,12 @@ ol {
 ul li {
     list-style-type:square;
     margin-bottom:.4em;
+}
+ul ul li {
+    list-style-type:disc;
+}
+ul ul ul li {
+    list-style-type:circle;
 }
 ul ul {
     padding-left:1.2em;
@@ -702,6 +711,7 @@ div.deprecated span.title {
     color:#487858;
     padding:10px 20px;
     font-size:90%;
+    margin-right: 18em; /* prevent doc versoin switcher from overlapping with footer text */
 }
 
 /* FORMS */
