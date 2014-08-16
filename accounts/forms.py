@@ -1,8 +1,12 @@
 from __future__ import absolute_import
-
 from django import forms
-
+from registration.forms import RegistrationFormUniqueEmail
 from .models import Profile
+
+class RegistrationForm(RegistrationFormUniqueEmail):
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        del self.fields["tos"]
 
 class ProfileForm(forms.ModelForm):
     """

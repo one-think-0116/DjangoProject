@@ -5,4 +5,3 @@ djangodocs
 static_root
 djangodocs.index
 docs/locale/*/LC_MESSAGES/django.mo
-secrets.json
