@@ -41,8 +41,6 @@ INSTALLED_APPS = [
 
     'djangosecure',
     'registration',
-    'south',
-    'django_pygments',
 
     'accounts',
     'aggregator',
@@ -100,11 +98,6 @@ PUSH_CREDENTIALS = 'aggregator.utils.push_credentials'
 PUSH_SSL_CALLBACK = PRODUCTION
 # SUPERFEEDR_CREDS is a 2 element list in the form of [email,secretkey]
 SUPERFEEDR_CREDS = SECRETS.get('superfeedr_creds')
-
-
-# South settings
-
-SOUTH_TESTS_MIGRATE = False
 
 
 # Enable optional components
