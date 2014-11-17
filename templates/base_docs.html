@@ -1,15 +1,8 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}Django Documentation{% endblock %}
+{% extends "base_2col.html" %}
 
-{% block header %}
-	<h1>Documentation</h1>
-{% endblock %}
+{% block sectionid %}documentation{% endblock %}
 
-{% block navigation %}
-  {% include "includes/header_docs.html" %}
-{% endblock %}
+{% block title %}Documentation{% endblock %}
 
-{% block footer %}
-  {% include "includes/footer_docs.html" %}
-{% endblock %}
+{% block billboard %}<h2><a href="/documentation/">Django documentation</a></h2>{% endblock %}
+

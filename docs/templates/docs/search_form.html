@@ -1,14 +1,16 @@
 {% load i18n %}
 
-<form action="{% url 'document-search' %}" id="{{ search_form_id }}" class="search form-input" role="search">
-  <label class="visuallyhidden" for="news-search">Search:</label>
-    {{ form.q }}
-    {% comment %}
+<form action="{% url 'document-search' %}" id="{{ search_form_id }}" class="search">
+  <div>
+    <p>
+      {{ form.q }}
+    </p>
+    <p>
       <label for="{{ form.release.auto_id }}">{% trans "Version:" %}</label>
       {{ form.release }}
-    {% endcomment %}
-    <button type="submit">
-      <i class="icon icon-search"></i>
-      <span class="visuallyhidden">{% trans 'Search' %}</span>
-    </button>
+    </p>
+    <p>
+      <input type="submit" class="submit" value="{% trans 'Search' %}" />
+    </p>
+  </div>
 </form>
