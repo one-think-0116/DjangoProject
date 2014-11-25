@@ -14,11 +14,8 @@ BASE = Path(__file__).absolute().ancestor(2)
 PRODUCTION = ('DJANGOPROJECT_DEBUG' not in os.environ)
 
 # It's a secret to everybody
-try:
-    with open(BASE.ancestor(1).child('conf').child('secrets.json')) as handle:
-        SECRETS = json.load(handle)
-except IOError:
-    SECRETS = {'secret_key': 'a', 'superfeedr_creds': ['any@email.com', 'some_string']}
+with open(BASE.ancestor(1).child('conf').child('secrets.json')) as handle:
+    SECRETS = json.load(handle)
 
 
 # Django settings
@@ -123,11 +120,6 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStora
 STATIC_ROOT = BASE.ancestor(1).child('static')
 
 STATIC_URL = '/s/'
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
 
 TEMPLATE_DIRS = [BASE.child('templates')]
 

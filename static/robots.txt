@@ -1,2 +1,2 @@
-User-agent: *
-Disallow: /admin
+user-agent: AhrefsBot
+disallow: /

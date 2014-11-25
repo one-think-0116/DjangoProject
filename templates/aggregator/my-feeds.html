@@ -5,13 +5,12 @@
 
 <h2 class="deck">Manage your community aggregator feeds:</h2>
 
-<div id="s-feed">
-<ul class="simple">
+<ul>
   {% for feed in feeds %}
     <li>
-    <strong>{{ feed }}</strong> (<code>{{ feed.feed_url }}</code> — <strong>{{ feed.get_approval_status_display }}</strong>) —
-    <a href="{% url 'community-edit-feed' feed.id %}">Edit</a> |
-    <a href="{% url 'community-delete-feed' feed.id %}">Delete</a>
+    {{ feed }} (<code>{{ feed.feed_url }}</code> — <strong>{{ feed.get_approval_status_display }}</strong>) —
+    <a href="{% url 'community-edit-feed' feed.id %}">edit</a> |
+    <a href="{% url 'community-delete-feed' feed.id %}">delete</a>
     </li>
   {% endfor %}
   <li>Add a new feed:
@@ -22,5 +21,4 @@
   </li>
   {# <li>Claim a feed already in the system.</li> #}
 </ul>
-</div>
 {% endblock %}

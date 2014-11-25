@@ -41,8 +41,7 @@ INSTALLED_APPS = [
 
     'djangosecure',
     'registration',
-    'django_pygments',
-    
+
     'accounts',
     'aggregator',
     'blog',
