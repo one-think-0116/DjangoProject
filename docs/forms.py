@@ -28,14 +28,13 @@ class DocSearchForm(haystack.forms.SearchForm):
     def __init__(self, data=None, **kwargs):
         self.default_release = kwargs.pop('default_release')
         super(DocSearchForm, self).__init__(data=data, **kwargs)
-        self.fields['q'].widget = forms.TextInput(attrs={'type': 'search'})
+        self.fields['q'].widget = forms.TextInput(attrs={'type': 'search', 'placeholder': 'Search documentation'})
         self.fields['release'].queryset = self.fields['release'].queryset.filter(lang=self.default_release.lang)
         self.fields['release'].initial = self.default_release
 
     def search(self):
         results = super(DocSearchForm, self).search()
-        if not self.is_valid():
-            return []
+        assert self.cleaned_data  # SearchForm.search() calls is_valid()
         release = self.cleaned_data['release']
         results = results.filter(lang=release.lang, version=release.version)
         return results
