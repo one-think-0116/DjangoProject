@@ -420,17 +420,18 @@ blockquote {
 	}
 
 	.meta {
-		@include font-size(13);
+		@include font-size(12);
 		color: $green-medium;
 		font-weight: 700;
+		text-transform: uppercase;
 		width: auto;
 		float: left;
-		margin: 10px 0 0 10px;
+		margin: 12px 0 0 10px;
 		display: none;
 
 		@include respond-min(1150px) {
 			float: left;
-			width: 240px;
+			width: 260px;
 			display: block;
 		}
 
