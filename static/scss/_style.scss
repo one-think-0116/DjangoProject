@@ -179,12 +179,12 @@ pre,
 samp {
 	@include monospace;
 	color: $green-dark;
-	font-size: 1.05em;
+	font-size: 1.1em;
 }
 
 span.pre {
 	@include monospace;
-	font-size: 1.05em;
+	font-size: 1.1em;
 }
 
 a:hover, a:active, a:focus {
@@ -286,7 +286,7 @@ html.wf-loading div.container {
 			border-bottom: 0;
 		}
 		dd {
-			&.last-child {
+			&:last-child {
 				padding-bottom: 0;
 			}
 		}
@@ -812,7 +812,7 @@ html.wf-loading div.container {
 				margin-left: 0;
 				padding-left: 0;
 			}
-			&.last-child {
+			&:last-child {
 				margin-right: 0;
 				padding-right: 0;
 			}
@@ -1160,7 +1160,7 @@ html.wf-loading div.container {
 			&:first-child {
 				margin-left: 0;
 			}
-			&.last-child {
+			&:last-child {
 				margin-right: 0;
 			}
 		}
@@ -2057,7 +2057,6 @@ h2 + .list-link-soup {
 
 	background: $white;
 	padding: 20px;
-	margin-top: 3em;
 
 	.left {
 		float: left;
@@ -2137,10 +2136,11 @@ h2 + .list-link-soup {
 }
 
 #dev-warning, #outdated-warning {
-	position: fixed;
+	position: absolute;
 	top: 0;
 	width: 100%;
 	padding: 8px 20px 8px;
+	@include box-sizing(border-box);
 	background-image: -webkit-linear-gradient(-45deg, rgba(0, 0, 0, .04) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, .04) 50%, rgba(0, 0, 0, .04) 75%, transparent 75%, transparent);
 	background-image: -moz-linear-gradient(-45deg, rgba(0, 0, 0, .04) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, .04) 50%, rgba(0, 0, 0, .04) 75%, transparent 75%, transparent);
 	background-image: linear-gradient(135deg, rgba(0, 0, 0, .04) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, .04) 50%, rgba(0, 0, 0, .04) 75%, transparent 75%, transparent);
@@ -2148,16 +2148,16 @@ h2 + .list-link-soup {
 	font-size: 14px;
 	text-align: center;
 	background-color: #ffe761;
+
+	@include device-min(768px) {
+		position: fixed;
+		min-width: 768px;
+	}
 }
 
 #outdated-warning {
 	background-color: #ffbaba;
-}
-
-#s-getting-help {
-	// hiding getting help section because we moved it to sidebar, but because of docs being served
-	// on readthedocs, we still want to keep the content in.
-	display: none;
+	color: $red-dark;
 }
 
 #docs-content {
@@ -2184,10 +2184,6 @@ h2 + .list-link-soup {
 		tt.literal {
 			border-bottom: 1px dotted $text-light;
 		}
-
-		em {
-			font-style: normal;
-		}
 	}
 }
 
@@ -2198,16 +2194,13 @@ h2 + .list-link-soup {
 	font-weight: bold;
 	margin-bottom: 20px;
 
-	padding: 10px 13px;
+	padding: 12px 15px 0px;
 	border: 1px solid $green-very-light;
 	@include border-radius(4px);
 
 	p {
 		font-weight: normal;
 		margin-top: 0.3em;
-		&:last-child {
-			margin-bottom: 0;
-		}
 	}
 }
 
