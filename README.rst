@@ -3,9 +3,9 @@ djangoproject.com source code
 
 To run locally, do the usual:
 
-#. Create a virtualenv
+1. Create a virtualenv
 
-#. Install dependencies::
+2. Install dependencies::
 
     pip install -r deploy-requirements.txt
     pip install -r local-requirements.txt
@@ -13,45 +13,39 @@ To run locally, do the usual:
    If you only need to deploy, and don't need to test any changes,
    you can use deploy-requirements.txt only.
 
-#. Create a 'secrets.json' file in the directory above the checkout, containing
+3. Create a 'secrets.json' file in the directory above the checkout, containing
    something like::
 
     { "secret_key": "xyz",
       "superfeedr_creds": ["any@email.com", "some_string"] }
 
-#. Create databases::
+4. Create databases::
 
     createuser -d djangoproject
     createdb -O djangoproject djangoproject
     createuser code.djangoproject
     createdb -O code.djangoproject code.djangoproject
 
-#. Set debug environment variable::
-
-    export DJANGOPROJECT_DEBUG=1
-
-   The code of the project uses this env variable to distinguish between
-   production and development. Set it to ``1`` to disable settings that are only
-   relevant on the production server.
-
-#. Create tables::
+5. Create tables::
 
     psql -d code.djangoproject < tracdb/trac.sql
 
+    ./manage.py syncdb
     ./manage.py migrate
 
    and::
 
+    ./manage.py syncdb --docs
     ./manage.py migrate --docs
 
    if you want to run docs site.
 
-#. For docs::
+6. For docs::
 
     ./manage.py loaddata doc_releases.json --docs
     ./manage.py update_docs --docs
 
-#. Finally::
+7. Finally::
 
     ./manage.py runserver
 
