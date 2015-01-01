@@ -1,5 +1,6 @@
 *.pyc
 *.db
+local_settings.py
 djangodocs
 static_root
 djangodocs.index
