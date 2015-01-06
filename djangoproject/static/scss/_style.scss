@@ -180,7 +180,7 @@ pre,
 samp {
 	@include monospace;
 	color: $green-dark;
-	font-size: 1em;
+	font-size: 1.07em;
 }
 
 tt {
@@ -189,6 +189,7 @@ tt {
 
 span.pre {
 	@include monospace;
+	font-size: 1.07em;
 }
 
 a:hover, a:active, a:focus {
@@ -396,6 +397,12 @@ blockquote {
 	}
 	@include old-ie {
 		min-width: 768px;
+	}
+
+	&.sidebar-right {
+		.mdzr-boxshadow & {
+			@include box-shadow(-1200px 0 0 0px #fff);
+		}
 	}
 }
 
