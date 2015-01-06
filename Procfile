@@ -1,2 +1,1 @@
-web: make run
-scss: make watch-scss
+web: waitress-serve --port=$PORT django_www.heroku_wsgi:application

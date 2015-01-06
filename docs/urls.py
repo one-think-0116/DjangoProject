@@ -9,7 +9,6 @@ urlpatterns = [
     url(
         r'^$',
         views.index,
-        name='homepage'
     ),
     url(
         r'^search/$',

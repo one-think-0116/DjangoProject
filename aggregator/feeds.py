@@ -1,7 +1,6 @@
+from django.core import urlresolvers
 from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404
-
-from django_hosts.resolvers import reverse
 
 from .models import FeedType, FeedItem
 
@@ -43,7 +42,7 @@ class CommunityAggregatorFeed(BaseCommunityAggregatorFeed):
         return "Django community aggregator: %s" % obj.name
 
     def link(self, obj):
-        return reverse('aggregator-feed', args=[obj.slug], host='www')
+        return urlresolvers.reverse('aggregator-feed', args=[obj.slug])
 
     def description(self, obj):
         return self.title(obj)
@@ -54,7 +53,7 @@ class CommunityAggregatorFirehoseFeed(BaseCommunityAggregatorFeed):
     description = 'All activity from the Django community aggregator'
 
     def link(self):
-        return reverse('aggregator-firehose-feed', host='www')
+        return urlresolvers.reverse('aggregator-firehose-feed')
 
     def items(self):
         qs = FeedItem.objects.order_by('-date_modified').select_related('feed')

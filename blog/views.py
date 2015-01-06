@@ -9,7 +9,6 @@ from .models import Entry, Event
 class BlogViewMixin(object):
 
     date_field = 'pub_date'
-    paginate_by = 10
 
     def get_allow_future(self):
         return self.request.user.is_staff
@@ -35,7 +34,7 @@ class BlogArchiveIndexView(BlogViewMixin, ArchiveIndexView):
 
 
 class BlogYearArchiveView(BlogViewMixin, YearArchiveView):
-    make_object_list = True
+    pass
 
 
 class BlogMonthArchiveView(BlogViewMixin, MonthArchiveView):
