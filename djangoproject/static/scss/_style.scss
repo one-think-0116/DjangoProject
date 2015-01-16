@@ -180,7 +180,7 @@ pre,
 samp {
 	@include monospace;
 	color: $green-dark;
-	font-size: 1em;
+	font-size: 1.07em;
 }
 
 tt {
@@ -189,6 +189,7 @@ tt {
 
 span.pre {
 	@include monospace;
+	font-size: 1.07em;
 }
 
 a:hover, a:active, a:focus {
@@ -396,12 +397,6 @@ blockquote {
 	}
 	@include old-ie {
 		min-width: 768px;
-	}
-
-	&.sidebar-right {
-		.mdzr-boxshadow & {
-			@include box-shadow(-1200px 0 0 0px #fff);
-		}
 	}
 }
 
@@ -2084,8 +2079,8 @@ h2 + .list-link-soup {
 				content: $fa-var-cogs;
 			}
 		}
-		.last, .highlight {
-			margin-bottom: 0px;
+		.last {
+			margin-bottom: 10px;
 		}
 }
 
@@ -2257,6 +2252,7 @@ h2 + .list-link-soup {
 }
 
 .versionadded, .versionchanged, .versionmodified {
+	color: $text-light;
 	@include sans-serif;
 	font-weight: bold;
 	margin-bottom: 20px;
@@ -2272,27 +2268,6 @@ h2 + .list-link-soup {
 			margin-bottom: 0;
 		}
 	}
-}
-
-.deprecated {
-	@extend .versionchanged;
-
-	.versionadded, .versionchanged, .versionmodified {
-		border: none;
-		padding: 0;
-		margin-bottom: 0;
-		display: block;
-	}
-
-	p {
-		font-weight: normal;
-		margin-top: 0;
-		&:last-child {
-			margin-bottom: 0;
-		}
-	}
-
-
 }
 
 dl.function, dl.class, dl.method, dl.attribute {
@@ -2803,4 +2778,59 @@ hr {
 }
 .clearfix, .group-container {
 	@include clearfix;
+}
+
+/// Fundraising page
+.heart-section {
+	margin-top: 50px;
+
+	.heart {
+		width: 55%;
+		float: left;
+		img, svg {
+			width: 100%;
+			height: auto;
+		}
+	}
+	.description {
+		float: left;
+		margin-left: 5%;
+		width: 40%;
+
+		h2 {
+			margin-top: 0;
+			@include font-size(28);
+		}
+	}
+	.donate {
+		select {
+			width: 100%;
+		}
+		.cta {
+			margin: 10px 0;
+		}
+	}
+	.cls {
+		clear: both;
+	}
+	.footnote {
+		color: $gray-medium;
+		@include font-size(14);
+		margin-top: 20px;
+		text-align: center;
+	}
+}
+.heros-section {
+	.heros {
+		clear: both;
+		div {
+			width: 25%;
+			float: left;
+			text-align: center;
+			margin: 15px 0;
+			img {
+				max-width: 90%;
+			}
+		}
+	}
 }
