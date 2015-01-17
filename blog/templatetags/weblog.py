@@ -7,12 +7,10 @@ register = template.Library()
 
 
 @register.inclusion_tag('blog/entry_snippet.html')
-def render_latest_blog_entries(num, hide_summary=False, hide_readmore=False):
+def render_latest_blog_entries(num):
     entries = Entry.objects.published()[:num]
     return {
         'entries': entries,
-        'hide_summary': hide_summary,
-        'hide_readmore': hide_readmore,
     }
 
 
