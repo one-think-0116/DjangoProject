@@ -9,6 +9,7 @@ CSS rendered with Sass 3.2.7
 */
 
 //------------------- Globals
+
 body {
 	@include serif;
 	@include font-size(18);
@@ -179,7 +180,7 @@ pre,
 samp {
 	@include monospace;
 	color: $green-dark;
-	font-size: 1.07em;
+	font-size: 1em;
 }
 
 tt {
@@ -188,7 +189,6 @@ tt {
 
 span.pre {
 	@include monospace;
-	font-size: 1.07em;
 }
 
 a:hover, a:active, a:focus {
@@ -396,6 +396,12 @@ blockquote {
 	}
 	@include old-ie {
 		min-width: 768px;
+	}
+
+	&.sidebar-right {
+		.mdzr-boxshadow & {
+			@include box-shadow(-1200px 0 0 0px #fff);
+		}
 	}
 }
 
@@ -2078,8 +2084,8 @@ h2 + .list-link-soup {
 				content: $fa-var-cogs;
 			}
 		}
-		.last {
-			margin-bottom: 10px;
+		.last, .highlight {
+			margin-bottom: 0px;
 		}
 }
 
@@ -2166,7 +2172,7 @@ h2 + .list-link-soup {
 		}
 	}
 
-	&:hover {
+	&:hover, .hover-on {
 		li {
 			display: inline-block;
 		}
@@ -2251,7 +2257,6 @@ h2 + .list-link-soup {
 }
 
 .versionadded, .versionchanged, .versionmodified {
-	color: $text-light;
 	@include sans-serif;
 	font-weight: bold;
 	margin-bottom: 20px;
@@ -2267,6 +2272,27 @@ h2 + .list-link-soup {
 			margin-bottom: 0;
 		}
 	}
+}
+
+.deprecated {
+	@extend .versionchanged;
+
+	.versionadded, .versionchanged, .versionmodified {
+		border: none;
+		padding: 0;
+		margin-bottom: 0;
+		display: block;
+	}
+
+	p {
+		font-weight: normal;
+		margin-top: 0;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+
 }
 
 dl.function, dl.class, dl.method, dl.attribute {
@@ -2777,77 +2803,4 @@ hr {
 }
 .clearfix, .group-container {
 	@include clearfix;
-}
-
-/// Fundraising page
-.heart-section {
-	margin-top: 50px;
-
-	.heart {
-		width: 55%;
-		float: left;
-		img, svg {
-			width: 100%;
-			height: auto;
-		}
-		rect {
-			@include transition(opacity 250ms ease-out);
-			&.faded {
-				opacity: 0.05;
-				&:hover { opacity: 0.9; }
-			}
-		}
-	}
-	.description {
-		float: left;
-		margin-left: 5%;
-		width: 40%;
-
-		h2 {
-			margin-top: 0;
-			@include font-size(28);
-		}
-	}
-	.donate {
-		select {
-			width: 100%;
-		}
-		.cta {
-			margin: 10px 0;
-		}
-		.custom-donation {
-			display: none;
-		}
-		.prefix {
-			float: left;
-			font-size: 19px;
-			margin: 8px 9px 0 3px;
-		}
-		input[type="text"]{
-			width: 70%;
-		}
-	}
-	.cls {
-		clear: both;
-	}
-	.footnote {
-		color: $gray-medium;
-		@include font-size(14);
-		margin-top: 20px;
-		text-align: center;
-	}
-}
-.heros-section {
-	.heros {
-		clear: both;
-		div {
-			width: 25%;
-			float: left;
-			text-align: center;
-			margin: 15px 0;
-			img {
-				max-width: 90%;
-			}
-		}
-	}
 }
