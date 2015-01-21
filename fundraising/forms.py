@@ -48,10 +48,7 @@ class DjangoHeroForm(forms.ModelForm):
     )
     is_visible = forms.BooleanField(
         required=False,
-        label=(
-            "Yes, display my name, URL, and logo on this site. "
-            "(It'll be displayed shortly after we verify it.)"
-        ),
+        label='Yes, display my name, URL, and logo on this site.',
     )
     is_subscribed = forms.BooleanField(
         required=False,
