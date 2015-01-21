@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load weblog fundraising_extras %}
+{% load weblog %}
 {% block layout_class %}sidebar-right{% endblock %}
 {% block title %}News &amp; Events{% endblock %}
 
@@ -14,8 +14,6 @@
 {% block content-related %}
   <h1 class="visuallyhidden">Additional Information</h1>
   <div role="complementary">
-    {% donation_snippet %}
-
     {% if events %}
     <h2>Upcoming Events</h2>
     <ul class="list-events">
