@@ -17,8 +17,8 @@ class DjangoHeroForm(forms.ModelForm):
             },
         ),
         help_text=(
-            'We ask for your email address only to contact you about future '
-            'fundraising campaigns if you give us your permission below.'
+            'We ask for your email address only because we need to match your '
+            'donation with information from our payment processor.'
         ),
     )
 
@@ -48,18 +48,24 @@ class DjangoHeroForm(forms.ModelForm):
     )
     is_visible = forms.BooleanField(
         required=False,
-        label='Yes, display my name, URL, and logo on this site.',
+        label=(
+            'Yes, I want this information to be displayed on the Fundraising '
+            'page.'
+        ),
     )
     is_subscribed = forms.BooleanField(
         required=False,
         label=(
             'Yes, the Django Software Foundation can inform me about '
-            'future fundraising campaigns by email.'
+            'fundraising campaigns.'
         ),
     )
     is_amount_displayed = forms.BooleanField(
         required=False,
-        label='Yes, display the amount of my donation.'
+        label=(
+            'Yes, information about the amount of my donation can be '
+            'publicly shown.'
+        ),
     )
 
     class Meta:
@@ -96,15 +102,15 @@ class StripeTextInput(forms.TextInput):
 
 class DonateForm(forms.Form):
     AMOUNT_CHOICES = (
-        ('5.00', 'US $5'),
-        ('25.00', 'US $25'),
-        ('50.00', '1 hour: US $50'),
-        ('100.00', '2 hours: US $100'),
-        ('200.00', '4 hours: US $200'),
-        ('400.00', '1 day: US $400'),
-        ('1200.00', '3 days: US $1,200'),
-        ('2800.00', '1 week: US $2,800'),
-        ('custom', 'Other amount'),
+        ('5.00', '$5'),
+        ('25.00', '$25'),
+        ('50.00', '1 hour: $50'),
+        ('100.00', '2 hours: $100'),
+        ('200.00', '4 hours: $200'),
+        ('400.00', '1 day: $400'),
+        ('1200.00', '3 days: $1200'),
+        ('2800.00', '1 week: $2800'),
+        ('custom', 'Custom donation'),
     )
     AMOUNT_VALUES = dict(AMOUNT_CHOICES).keys()
 
@@ -120,7 +126,7 @@ class PaymentForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'class': 'required',
-                'placeholder': 'Amount in US Dollar',
+                'placeholder': 'Amount in US Dolar',
             },
         )
     )
@@ -172,6 +178,6 @@ class PaymentForm(forms.Form):
         self.fields['amount'].widget = forms.TextInput(
             attrs={
                 'class': 'required',
-                'placeholder': 'Amount in US Dollar',
+                'placeholder': 'Amount in USD',
             },
         )
