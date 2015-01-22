@@ -1,6 +1,6 @@
 STATIC = djangoproject/static
 
-.PHONY: collectstatics compile-scss compile-scss-debug watch-scss run install test
+.PHONY: collectstatics compile-scss compile-scss-debug watch-scss run install
 
 collectstatics: compile-scss
 	./manage.py collectstatic --noinput
@@ -19,6 +19,3 @@ run:
 
 install:
 	pip install -r requirements/dev.txt
-
-test:
-	@coverage run manage.py test aggregator contact docs fundraising legacy releases svntogit

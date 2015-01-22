@@ -1,12 +1,6 @@
 djangoproject.com source code
 =============================
 
-.. image:: https://img.shields.io/travis/django/djangoproject.com.svg
-    :target: http://travis-ci.org/django/djangoproject.com
-
-.. image:: https://img.shields.io/coveralls/django/djangoproject.com.svg
-   :target: https://coveralls.io/r/django/djangoproject.com
-
 To run locally, do the usual:
 
 #. Create a virtualenv
@@ -74,50 +68,6 @@ To run locally, do the usual:
    docs site in the same process. Open http://www.djangoproject.dev:8000/
    or http://docs.djangoproject.dev:8000/.
 
-Running the tests
------------------
-
-We us `Travis-CI <https://travis-ci.org/>`_ for continuous testing and
-`GitHub <https://github.com/>`_ pull request integration. If you're familiar
-with those systems you should not have any problems writing tests.
-
-Our test results can be found here:
-
-    https://travis-ci.org/django/djangoproject.com
-
-For local development don't hesitate to install
-`tox <http://tox.readthedocs.org/>`_ to run the website's test suite.
-
-Then in the root directory (next to the ``manage.py`` file) run::
-
-    tox
-
-Behind the scenes this will run the usual ``./manage.py test`` management
-command with a preset list of apps that we want to test as well as
-`flake8 <http://flake8.readthedocs.org/>`_ for code quality checks. We
-collect test coverage data as part of that tox run, to show the result
-simply run::
-
-    coverage report
-
-or for a HTML-based report::
-
-    coverage html
-
-**(Optional)** In case you're using an own virtualenv you can also run the
-tests manually using the ``test`` task of the ``Makefile``. Don't forgot to
-install the test requirements with the following command first though::
-
-    pip install -r requirements/tests.txt
-
-Then run::
-
-    make test
-
-or simply the usual test management command::
-
-    ./manage.py test [list of app labels]
-
 Supported browsers
 ------------------
 
@@ -140,6 +90,14 @@ when it comes to categorize browser support.
   Mobile Safari, Firefox on Android and the Android Browser should support
   the responsive styles as much as possible but some degredation can't be
   prevented due to the limited screen size and other platform restrictions.
+
+File locations
+--------------
+
+Static files such as CSS, JavaScript or image files can be found in the
+``djangoproject/static`` subdirectory.
+
+Templates can be found in the ``djangoproject/templates`` subdirectory.
 
 Styles
 ------

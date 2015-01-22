@@ -6,5 +6,3 @@ djangodocs.index
 docs/locale/*/LC_MESSAGES/django.mo
 secrets.json
 .sass-cache/
-.coverage
-.tox
