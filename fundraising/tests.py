@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from decimal import Decimal
+from functools import partial
 from mock import patch
 from operator import attrgetter
 
@@ -10,6 +10,25 @@ from django.test import TestCase
 
 from .forms import PaymentForm
 from .models import DjangoHero, Donation
+from .utils import shuffle_donations
+
+
+def _fake_random(*results):
+    """
+    Return a callable that generates the given results when called.
+    Useful for mocking random.random().
+
+    Example:
+
+    >>> r = _fake_random(1, 2, 3)
+    >>> r()
+    1
+    >>> r()
+    2
+    >>> r()
+    3
+    """
+    return partial(next, iter(results))
 
 
 class TestIndex(TestCase):
@@ -17,6 +36,15 @@ class TestIndex(TestCase):
         DjangoHero.objects.create()
         response = self.client.get(reverse('fundraising:index'))
         self.assertEqual(response.context['total_donors'], 1)
+
+    def test_hide_campaign_input(self):
+        # Checking if rendered output contains campaign form field
+        # to not generate ugly URLs
+        response = self.client.get(reverse('fundraising:index'))
+        self.assertNotContains(response, 'name="campaign"')
+
+        response = self.client.get(reverse('fundraising:index'), {'campaign': 'test'})
+        self.assertContains(response, 'name="campaign"')
 
     def test_render_donate_form_with_amount(self):
         response = self.client.get(reverse('fundraising:donate'), {'amount': 50})
@@ -122,7 +150,7 @@ class TestIndex(TestCase):
 
 
 class TestDjangoHero(TestCase):
-    def test_in_period_ordering(self):
+    def setUp(self):
         kwargs = {
             'approved': True,
             'is_visible': True,
@@ -136,12 +164,22 @@ class TestDjangoHero(TestCase):
         kwargs['is_amount_displayed'] = False
         h3 = DjangoHero.objects.create(**kwargs)
         Donation.objects.create(donor=h3, amount='10')
-        today = date.today()
-        self.assertQuerysetEqual(
-            DjangoHero.objects.in_period(today, today + timedelta(days=1)),
-            [Decimal('15.00'), Decimal('5.00'), Decimal('10.00')],
-            attrgetter('donated_amount')
-        )
+        self.today = date.today()
+
+    def test_donation_shuffling(self):
+        queryset = DjangoHero.objects.in_period(self.today, self.today + timedelta(days=1))
+
+        for random, expected in [
+            (lambda: 1, [15, 10, 5]),
+            (lambda: -1, [5, 10, 15]),
+            (_fake_random(1, 0, 1), [15, 5, 10]),
+        ]:
+            with patch('fundraising.utils.random', side_effect=random):
+                self.assertQuerysetEqual(
+                    shuffle_donations(queryset),
+                    expected,
+                    attrgetter('donated_amount')
+                )
 
 
 class TestPaymentForm(TestCase):
