@@ -1,10 +1,9 @@
 from django.contrib import admin
-from sorl.thumbnail.admin import AdminImageMixin
 from .models import DjangoHero, Donation, Testimonial
 
 
 @admin.register(DjangoHero)
-class DjangoHeroAdmin(AdminImageMixin, admin.ModelAdmin):
+class DjangoHeroAdmin(admin.ModelAdmin):
     list_filter = ['approved', 'created', 'modified',
                    'is_visible', 'is_subscribed', 'is_amount_displayed']
     list_display = ['id', 'name', 'email', 'created', 'modified', 'approved']
