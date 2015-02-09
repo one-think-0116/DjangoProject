@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 from django.core.management.base import NoArgsCommand
 
@@ -12,7 +12,7 @@ class Command(NoArgsCommand):
         for MC in Metric.__subclasses__():
             for metric in MC.objects.all():
                 if verbose:
-                    self.stdout.write("Updating %s ... " % metric.name.lower(), ending="")
+                    print("Updating %s ... " % metric.name.lower(), end="")
                 datum = metric.data.create(measurement=metric.fetch())
                 if verbose:
                     print(datum.measurement)

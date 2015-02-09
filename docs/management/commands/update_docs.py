@@ -47,7 +47,7 @@ class Command(NoArgsCommand):
         # "dev" builds before "1.0". This is ugly, but oh well.
         for release in DocumentRelease.objects.order_by('-version'):
             if verbosity >= 1:
-                self.stdout.write("Updating %s..." % release)
+                print "Updating %s..." % release
 
             # checkout_dir is shared for all languages.
             checkout_dir = Path(settings.DOCS_BUILD_ROOT).child(release.version)
@@ -97,7 +97,7 @@ class Command(NoArgsCommand):
                 build_dir.mkdir(parents=True)
 
                 if verbosity >= 2:
-                    self.stdout.write("  building %s (%s -> %s)" % (builder, source_dir, build_dir))
+                    print "  building %s (%s -> %s)" % (builder, source_dir, build_dir)
                 subprocess.call([
                     'sphinx-build',
                     '-b', builder,
@@ -117,7 +117,7 @@ class Command(NoArgsCommand):
             if not zipfile_path.parent.exists():
                 zipfile_path.parent.mkdir(parents=True)
             if verbosity >= 2:
-                self.stdout.write("  build zip (into %s)" % zipfile_path)
+                print "  build zip (into %s)" % zipfile_path
 
             def zipfile_inclusion_filter(f):
                 return f.isfile() and '.doctrees' not in f.components()
@@ -144,7 +144,7 @@ class Command(NoArgsCommand):
                 continue
 
             if verbosity >= 2:
-                self.stdout.write("  reindexing...")
+                print "  reindexing..."
 
             # Build a dict of {path_fragment: document_object}. We'll pop values
             # out of this dict as we go which'll make sure we know which
@@ -181,7 +181,7 @@ class Command(NoArgsCommand):
                             title = unescape_entities(strip_tags(json_doc['title']))
                         except KeyError, ex:
                             if verbosity >= 2:
-                                self.stdout.write("Skipping: %s (no %s)" % (path, ex.args[0]))
+                                print "Skipping: %s (no %s)" % (path, ex.args[0])
                             continue
 
                     doc = documents.pop(path, Document(path=path, release=release))
@@ -192,7 +192,7 @@ class Command(NoArgsCommand):
             # Clean up any remaining documents.
             for doc in documents.values():
                 if verbosity >= 2:
-                    self.stdout.write("Deleting:", doc)
+                    print "Deleting:", doc
                 haystack.site.remove_object(doc)
                 doc.delete()
 
