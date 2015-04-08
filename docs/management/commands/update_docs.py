@@ -99,7 +99,7 @@ class Command(NoArgsCommand):
 
                 if verbosity >= 2:
                     self.stdout.write("  building %s (%s -> %s)" % (builder, source_dir, build_dir))
-                subprocess.check_call([
+                subprocess.call([
                     'sphinx-build',
                     '-j', '4',
                     '-b', builder,
