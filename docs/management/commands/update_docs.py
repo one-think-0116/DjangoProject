@@ -99,7 +99,7 @@ class Command(NoArgsCommand):
 
                 if verbosity >= 2:
                     self.stdout.write("  building %s (%s -> %s)" % (builder, source_dir, build_dir))
-                subprocess.call([
+                subprocess.check_call([
                     'sphinx-build',
                     '-j', '4',
                     '-b', builder,
@@ -224,6 +224,7 @@ class Command(NoArgsCommand):
                 cwd = os.getcwd()
                 os.chdir(str(destdir))
                 subprocess.call(['git', 'reset', '--hard', 'HEAD'])
+                subprocess.call(['git', 'clean', '-fdx'])
                 subprocess.call(['git', 'pull'])
             finally:
                 os.chdir(cwd)
