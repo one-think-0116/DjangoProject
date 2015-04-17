@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import datetime
-
+from django.db import models, migrations
 import django.db.models.deletion
-from django.db import migrations, models
+import datetime
 
 
 class Migration(migrations.Migration):

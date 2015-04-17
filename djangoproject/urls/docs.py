@@ -1,4 +1,5 @@
-from django.conf.urls import include, url
+from __future__ import absolute_import
+from django.conf.urls import url, include
 from django.http import HttpResponse
 
 from docs.sitemaps import DocsSitemap

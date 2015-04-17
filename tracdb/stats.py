@@ -6,7 +6,7 @@ import operator
 import django.db
 from django.utils.datastructures import SortedDict
 
-from .models import Attachment, Revision, Ticket, TicketChange
+from .models import Revision, Ticket, TicketChange, Attachment
 
 _statfuncs = []
 

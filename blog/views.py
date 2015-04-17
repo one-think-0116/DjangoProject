@@ -1,6 +1,6 @@
 from django.views.generic.dates import (
-    ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView,
-    YearArchiveView,
+    ArchiveIndexView, YearArchiveView,
+    MonthArchiveView, DayArchiveView, DateDetailView,
 )
 
 from .models import Entry, Event

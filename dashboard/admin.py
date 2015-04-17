@@ -1,6 +1,7 @@
-from django.contrib import admin
+from __future__ import absolute_import
 
-from .models import Category, Datum, Metric
+from django.contrib import admin
+from .models import Category, Metric, Datum
 
 
 @admin.register(Category)
