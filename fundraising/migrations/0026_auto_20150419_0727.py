@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import migrations, models
+from django.db import models, migrations
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fundraising', '0009_djangohero_approved'),
+        ('fundraising', '0025_auto_20150419_0655'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='djangohero',
-            name='url',
-            field=models.URLField(verbose_name=b'URL', blank=True),
+            model_name='donation',
+            name='receipt_email',
+            field=models.EmailField(null=True, max_length=75),
             preserve_default=True,
         ),
     ]
