@@ -1,133 +1,136 @@
+from datetime import date
+from decimal import Decimal, DecimalException
+
 import stripe
+from django.conf import settings
 from django.contrib import messages
-from django.forms.models import modelformset_factory
-from django.http import JsonResponse
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
 
 from .exceptions import DonationError
-from .forms import DjangoHeroForm, PaymentForm, DonationForm
-from .models import Campaign, DjangoHero, Donation, Testimonial
+from .forms import DjangoHeroForm, DonateForm, PaymentForm
+from .models import (
+    DEFAULT_DONATION_AMOUNT, DISPLAY_LOGO_AMOUNT, RESTART_GOAL, STRETCH_GOAL,
+    WEEKLY_GOAL, DjangoHero, Donation, Testimonial,
+)
+from .utils import shuffle_donations
 
 
 def index(request):
-    campaigns = Campaign.objects.filter(is_public=True, is_active=True)
-    if len(campaigns) == 1:
-        return redirect('fundraising:campaign', slug=campaigns[0].slug)
+    # replace with get_week_begin_end_datetimes() if we switch to a weekly
+    # goal at some point
+    begin = date(2015, 1, 1)
+    end = date(2016, 1, 1)
+    donated_amount = Donation.objects.filter(
+        created__gte=begin, created__lt=end,
+    ).aggregate(Sum('amount'))
+
+    donors_with_logo = DjangoHero.objects.in_period(begin, end, with_logo=True)
+    other_donors = DjangoHero.objects.in_period(begin, end)
+
+    campaign = request.GET.get('campaign')
 
     return render(request, 'fundraising/index.html', {
-        'campaigns': campaigns,
+        'donated_amount': donated_amount['amount__sum'] or 0,
+        'goal_amount': RESTART_GOAL,
+        'stretch_goal_amount': STRETCH_GOAL,
+        'donors_with_logo': shuffle_donations(donors_with_logo),
+        'other_donors': shuffle_donations(other_donors),
+        'total_donors': DjangoHero.objects.count(),
+        'form': DonateForm(initial={
+            'amount': DEFAULT_DONATION_AMOUNT,
+            'campaign': campaign
+        }),
+        'testimonial': Testimonial.objects.filter(is_active=True).order_by('?').first(),
+        'display_logo_amount': DISPLAY_LOGO_AMOUNT,
+        'weekly_goal': WEEKLY_GOAL,
     })
 
 
-def campaign(request, slug):
-    filter_params = {} if request.user.is_staff else {'is_public': True}
-    campaign = get_object_or_404(Campaign, slug=slug, **filter_params)
-    testimonial = Testimonial.objects.filter(campaign=campaign, is_active=True).order_by('?').first()
-
-    return render(request, campaign.template, {
-        'campaign': campaign,
-        'testimonial': testimonial,
-    })
-
-
-@require_POST
 def donate(request):
-    form = PaymentForm(request.POST)
+    show_amount = False
+    if request.method == 'POST':
+        fixed_amount = None
+        form = PaymentForm(request.POST)
 
-    if form.is_valid():
-        # Try to create the charge on Stripe's servers - this will charge the user's card
-        try:
-            donation = form.make_donation()
-        except DonationError as donation_error:
-            data = {
-                'success': False,
-                'error': str(donation_error),
-            }
+        if form.is_valid():
+            # Try to create the charge on Stripe's servers - this will charge the user's card
+            try:
+                donation = form.make_donation()
+            except DonationError as donation_error:
+                # If a failure happened show the error but populate the
+                # form again with those values that can be reused
+                # Note: no stripe_token added to initials here
+                initial = {
+                    'amount': form.cleaned_data['amount'],
+                    'receipt_email': form.cleaned_data['receipt_email'],
+                    'campaign': form.cleaned_data['campaign'],
+                }
+                context = {
+                    'form': PaymentForm(initial=initial),
+                    'donation_error': str(donation_error),
+                    'publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
+                }
+                return render(request, 'fundraising/donate.html', context)
+            else:
+                return redirect(donation)
         else:
-            data = {
-                'success': True,
-                'redirect': donation.get_absolute_url(),
-            }
+            if 'amount' in form.errors:
+                show_amount = True
     else:
-        data = {
-            'success': False,
-            'error': form.errors.as_json(),
-        }
-    return JsonResponse(data)
+        fixed_amount = request.GET.get('amount') or None
+        campaign = request.GET.get('campaign')
+        initial = {'campaign': campaign}
+        if fixed_amount:
+            try:
+                initial['amount'] = Decimal(fixed_amount)
+            except DecimalException:
+                show_amount = True
+        form = PaymentForm(initial=initial, fixed_amount=fixed_amount)
+
+    if show_amount:
+        form.show_amount()
+
+    context = {
+        'form': form,
+        'publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
+    }
+    return render(request, 'fundraising/donate.html', context)
 
 
 def thank_you(request, donation):
     donation = get_object_or_404(Donation, pk=donation)
     if request.method == 'POST':
-        form = DjangoHeroForm(
-            data=request.POST,
-            files=request.FILES,
-            instance=donation.donor,
-        )
+        if donation.donor:
+            form = DjangoHeroForm(
+                data=request.POST,
+                files=request.FILES,
+                instance=donation.donor,
+            )
+        else:
+            form = DjangoHeroForm(data=request.POST, files=request.FILES)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, "Thank you! You're a Hero.")
-            return redirect(
-                **{'to': 'fundraising:campaign', 'slug': donation.campaign.slug}
-                if donation.campaign else {'to': 'fundraising:index'}
-            )
+            hero = form.save()
+            try:
+                customer = stripe.Customer.retrieve(donation.stripe_customer_id)
+                customer.description = hero.name or None
+                customer.email = hero.email or None
+                customer.save()
+            except stripe.StripeError:
+                raise
+            else:
+                donation.donor = hero
+                donation.save()
+                messages.success(request, "Thank you! You're a Hero.")
+                return redirect('fundraising:index')
     else:
-        form = DjangoHeroForm(instance=donation.donor)
+        if donation.donor:
+            form = DjangoHeroForm(instance=donation.donor)
+        else:
+            form = DjangoHeroForm()
 
     return render(request, 'fundraising/thank-you.html', {
         'donation': donation,
         'form': form,
     })
-
-
-def manage_donations(request, hero):
-    hero = get_object_or_404(DjangoHero, pk=hero)
-    recurring_donations = hero.donation_set.filter(
-        stripe_subscription_id__isnull=False
-    )
-
-    ModifyDonationsFormset = modelformset_factory(Donation, form=DonationForm, extra=0)
-
-    if request.method == 'POST':
-        hero_form = DjangoHeroForm(
-            data=request.POST,
-            files=request.FILES,
-            instance=hero,
-        )
-        modify_donations_formset = ModifyDonationsFormset(
-            request.POST,
-            queryset=recurring_donations
-        )
-
-        if hero_form.is_valid() and modify_donations_formset.is_valid():
-            hero_form.save()
-            modify_donations_formset.save()
-            messages.success(request, "Your information has been updated.")
-    else:
-        hero_form = DjangoHeroForm(instance=hero)
-        modify_donations_formset = ModifyDonationsFormset(
-            queryset=recurring_donations
-        )
-
-    return render(request, 'fundraising/manage-donations.html', {
-        'hero': hero,
-        'hero_form': hero_form,
-        'modify_donations_formset': modify_donations_formset,
-        'recurring_donations': recurring_donations
-    })
-
-
-def cancel_donation(request, hero, donation):
-    hero = get_object_or_404(DjangoHero, pk=hero)
-    donation = get_object_or_404(Donation, pk=donation, donor=hero,
-        stripe_subscription_id__isnull=False)
-
-    customer = stripe.Customer.retrieve(donation.stripe_customer_id)
-    customer.subscriptions.retrieve(donation.stripe_subscription_id).delete()
-
-    donation.stripe_subscription_id = None
-    donation.save()
-
-    return redirect('fundraising:manage-donations', hero=hero.pk)
