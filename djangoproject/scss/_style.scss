@@ -71,6 +71,12 @@ dl {
 			margin-bottom: 0;
 		}
 	}
+
+	&.glossary {
+		dt {
+			font-weight: 600;
+		}
+	}
 }
 h1,
 h2,
@@ -1022,13 +1028,21 @@ blockquote {
 					background: url(../img/logo-rackspace.svg) no-repeat left center;
 				}
 			}
+
+			&.elastic {
+				background: url(../img/logo-elastic.png) no-repeat left center;
+				.mdzr-svg & {
+					background: url(../img/logo-elastic.svg) no-repeat left center;
+					background-size: contain;
+				}
+			}
+
 			&.threespot {
 				background: url(../img/logo-threespot.png) no-repeat left center;
 				.mdzr-svg & {
 					background: url(../img/logo-threespot.svg) no-repeat left center;
 				}
 			}
-
 			&.andrevv {
 				background: url(../img/logo-andrevv.png) no-repeat left center;
 				.mdzr-svg & {
@@ -1126,11 +1140,6 @@ blockquote {
 		border: 1px solid $gray-line;
 		color: $gray-medium;
 		font-weight: 400;
-
-		&.inline {
-			display: inline;
-			margin-right: 1em;
-		}
 
 		em {
 			color: $green-dark;
@@ -2555,7 +2564,6 @@ form {
 	input[type="text"],
 	input[type="email"],
 	input[type="password"],
-	input[type="number"],
 	input[type="url"],
 	textarea {
 		@include sans-serif;
@@ -3003,25 +3011,26 @@ hr {
 	@include font-size(14);
 	margin-top: 20px;
 	text-align: center;
+	/* The IDs in documentation footnotes should stay as table cells */
+	.label {
+		display: table-cell;
+		padding-right: 1em;
+	}
 }
 form .footnote {
 	margin-top: 10px;
 	text-align: left;
 }
+.footnote.docutils {
+	text-align: left;
+}
+
 .heros-section {
 	overflow: hidden;
-
 	.heros {
 		clear: both;
-
-		.individuals, .organizations {
-			width: 50%;
-		}
-		.organizations {
-			float: left;
-		}
 		.hero {
-			width: 50%;
+			width: 25%;
 			position: relative;
 			height: auto;
 			div {
@@ -3055,32 +3064,6 @@ form .footnote {
 	}
 	.pagination {
 		clear: both;
-	}
-}
-
-.manage-donations-form {
-	select, input[type="number"] {
-		width: 300px;
-	}
-	input[type="number"] {
-		padding: 7px 10px;
-		width: 278px;
-	}
-}
-
-.django-hero-form {
-	.form-control {
-		margin: 1em 0;
-	}
-	ul {
-		list-style: none;
-		display: inline-block;
-		margin: 0;
-		padding: 0;
-	}
-	li {
-		display: inline-block;
-		margin-left: 1em;
 	}
 }
 
