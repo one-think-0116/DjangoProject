@@ -1141,11 +1141,6 @@ blockquote {
 		color: $gray-medium;
 		font-weight: 400;
 
-		&.inline {
-			display: inline;
-			margin-right: 1em;
-		}
-
 		em {
 			color: $green-dark;
 		}
@@ -2569,7 +2564,6 @@ form {
 	input[type="text"],
 	input[type="email"],
 	input[type="password"],
-	input[type="number"],
 	input[type="url"],
 	textarea {
 		@include sans-serif;
@@ -2955,9 +2949,6 @@ hr {
 		}
 		.cta {
 			margin: 10px 0;
-			& .disabled {
-				opacity: 0.5
-			}
 		}
 		.custom-donation {
 			display: none;
@@ -3036,18 +3027,10 @@ form .footnote {
 
 .heros-section {
 	overflow: hidden;
-
 	.heros {
 		clear: both;
-
-		.individuals, .organizations {
-			width: 50%;
-		}
-		.organizations {
-			float: left;
-		}
 		.hero {
-			width: 50%;
+			width: 25%;
 			position: relative;
 			height: auto;
 			div {
@@ -3081,32 +3064,6 @@ form .footnote {
 	}
 	.pagination {
 		clear: both;
-	}
-}
-
-.manage-donations-form {
-	select, input[type="number"] {
-		width: 300px;
-	}
-	input[type="number"] {
-		padding: 7px 10px;
-		width: 278px;
-	}
-}
-
-.django-hero-form {
-	.form-control {
-		margin: 1em 0;
-	}
-	ul {
-		list-style: none;
-		display: inline-block;
-		margin: 0;
-		padding: 0;
-	}
-	li {
-		display: inline-block;
-		margin-left: 1em;
 	}
 }
 
