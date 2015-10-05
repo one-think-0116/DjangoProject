@@ -27,15 +27,7 @@ class ReleaseManager(models.Manager):
 
     def previous_lts(self):
         """Get the previous LTS if it's still supported."""
-        current_lts = self.current_lts()
-        previous_lts = list(self.lts().exclude(
-            major=current_lts.major,
-            minor=current_lts.minor,
-        ))
-        # Only the "X.Y" version will have an EOL date.
-        eol_date = previous_lts[-1].eol_date
-        if eol_date is None or eol_date > datetime.date.today():
-            return previous_lts[0]
+        return
 
     def current_version(self):
         current_version = cache.get(Release.DEFAULT_CACHE_KEY, None)
