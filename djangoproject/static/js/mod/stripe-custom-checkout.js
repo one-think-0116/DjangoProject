@@ -50,7 +50,7 @@ define([
         var amountDollars = $donationForm.find('[name=amount]').val();
         var amountCents = parseFloat(amountDollars) * 100;
         var csrfToken = $donationForm.find('[name=csrfmiddlewaretoken]').val();
-        var recaptchaToken = document.getElementById('id_captcha').dataset.callback
+        var recaptchaToken = document.getElementById('id_captcha').value;
         var data = {
             'captcha': recaptchaToken,
             'csrfmiddlewaretoken': csrfToken
@@ -62,16 +62,17 @@ define([
             dataType: 'json',
             success: function (data) {
                 if (data.success) {
-		    handler.open({
-			name: 'Django Software Foundation',
-			amount: amountCents,
-			currency: 'USD',
-			bitcoin: true,
-			zipCode: true,
-			billingAddress: true
-		    });
+                    handler.open({
+                        name: 'Django Software Foundation',
+                        amount: amountCents,
+                        currency: 'USD',
+                        bitcoin: true,
+                        zipCode: true,
+                        billingAddress: true
+                    });
                 } else {
-                    alert(data.error);
+                    alert('There was an error validating that you are not robot. ' +
+                          'Sorry. Please refresh the page and try again.');
                 }
             }
         })
